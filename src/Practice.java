@@ -26,21 +26,19 @@ public class Practice {
    * @param starting the starting vertex (may be null)
    * @return the number of vertices with odd values reachable from the starting vertex
    */
-  public static <T> int oddVertices(Vertex<Integer> starting, List<Vertex<?>> seen) {
+  public static <T> int oddVertices(Vertex<Integer> starting, List<Vertex<?>> seen, List<Integer> odds) {
     if (seen.contains(starting)||starting==null) return 0;
-    int count = 0;
     seen.add(starting);
+    if (starting.data%2==1) odds.add(starting.data);
     for (Vertex<Integer> neighbor : starting.neighbors) {
-      count += oddVertices(neighbor,seen);
-      if (starting.data%2==1) {
-        return 1;
-      }
+      oddVertices(neighbor,seen,odds);
     }
-    return count;
+    return odds.size();
   }
   public static <T> int oddVertices(Vertex<Integer> starting) {
     List<Vertex<?>> seen = new ArrayList<>();
-    return oddVertices(starting,seen);
+    List<Integer> odds = new ArrayList<>();
+    return oddVertices(starting,seen,odds);
   }
 
   /**
@@ -118,7 +116,12 @@ public class Practice {
    * @return true if there is a two-way connection between v1 and v2, false otherwise
    */
   public static <T> boolean twoWay(Vertex<T> v1, Vertex<T> v2, List<Vertex<?>> seen) {
+    if (v1==null||v2==null) return false;
     if (v1==v2) return true;
+    seen.add(v1);
+    for (Vertex<T> neighbor : v1.neighbors) {
+      return twoWay(neighbor, v2, seen);
+    }
     return false;
   }
   public static <T> boolean twoWay(Vertex<T> v1, Vertex<T> v2) {
