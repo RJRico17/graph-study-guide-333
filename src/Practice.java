@@ -87,8 +87,20 @@ public class Practice {
    * @param starting the starting vertex value
    * @return a sorted list of all reachable vertex values
    */
+  public static List<Integer> sortedReachable(Map<Integer, Set<Integer>> graph, int starting, List<Integer> sorted) {
+    if (!graph.containsKey(starting)) return List.of();
+    if (sorted.contains(starting)) return sorted;
+    sorted.add(starting);
+    for (Integer neighbor : graph.get(starting)) {
+      sortedReachable(graph, neighbor, sorted);
+    }
+    return sorted;
+  }
   public static List<Integer> sortedReachable(Map<Integer, Set<Integer>> graph, int starting) {
-    return null;
+    List<Integer> sorted = new ArrayList<>();
+    sortedReachable(graph,starting,sorted);
+    Collections.sort(sorted);
+    return sorted;
   }
 
   /**
@@ -141,6 +153,7 @@ public class Practice {
    */
   public static boolean hasExtendedConnectionAtCompany(Professional person, String companyName, List<Professional> seen) {
     if (person==null||seen.contains(person)) return false;
+    if (person.getCompany()==companyName) return true;
     seen.add(person);
     for (Professional connection : person.getConnections()) {
       if (connection.getCompany()==companyName) return true;
