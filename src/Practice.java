@@ -141,8 +141,18 @@ public class Practice {
    * @param ending the ending vertex value
    * @return whether there exists a valid positive path from starting to ending
    */
-  public static boolean positivePathExists(Map<Integer, Set<Integer>> graph, int starting, int ending) {
+  public static boolean positivePathExists(Map<Integer, Set<Integer>> graph, int starting, int ending, List<Integer> seen) {
+    if (starting<0||ending<0||!graph.containsKey(starting)) return false;
+    if (starting==ending) return true;
+    seen.add(starting);
+    for (Integer neighbor : graph.get(starting)) {
+      if (!seen.contains(neighbor)&&neighbor>0) return positivePathExists(graph, neighbor, ending, seen);
+    }
     return false;
+  }
+  public static boolean positivePathExists(Map<Integer, Set<Integer>> graph, int starting, int ending) {
+    List<Integer> seen = new ArrayList<>();
+    return positivePathExists(graph, starting, ending, seen);
   }
 
   /**
