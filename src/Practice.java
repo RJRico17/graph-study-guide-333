@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,8 +26,21 @@ public class Practice {
    * @param starting the starting vertex (may be null)
    * @return the number of vertices with odd values reachable from the starting vertex
    */
-  public static int oddVertices(Vertex<Integer> starting) {
-    return 0;
+  public static <T> int oddVertices(Vertex<Integer> starting, List<Vertex<?>> seen) {
+    if (seen.contains(starting)||starting==null) return 0;
+    int count = 0;
+    seen.add(starting);
+    for (Vertex<Integer> neighbor : starting.neighbors) {
+      count += oddVertices(neighbor,seen);
+      if (starting.data%2==1) {
+        return 1;
+      }
+    }
+    return count;
+  }
+  public static <T> int oddVertices(Vertex<Integer> starting) {
+    List<Vertex<?>> seen = new ArrayList<>();
+    return oddVertices(starting,seen);
   }
 
   /**
@@ -46,8 +61,20 @@ public class Practice {
    * @param starting the starting vertex (may be null)
    * @return a sorted list of all reachable vertex values by 
    */
-  public static List<Integer> sortedReachable(Vertex<Integer> starting) {
-    return null;
+  public static List<Integer> sortedReachable(Vertex<Integer> current, List<Vertex<?>> seen, List<Integer> reachable) {
+    if (current==null||seen.contains(current)) return List.of();
+    seen.add(current);
+    reachable.add(current.data);
+    for (Vertex<Integer> neighbor : current.neighbors) {
+      sortedReachable(neighbor,seen,reachable);
+    }
+    Collections.sort(reachable);
+    return reachable;
+  }
+  public static <T> List<Integer> sortedReachable(Vertex<Integer> starting) {
+    List<Vertex<?>> seen = new ArrayList<>();
+    List<Integer> reachable = new ArrayList<>();
+    return sortedReachable(starting,seen,reachable);
   }
 
   /**
@@ -78,8 +105,13 @@ public class Practice {
    * @param v2 the target vertex
    * @return true if there is a two-way connection between v1 and v2, false otherwise
    */
-  public static <T> boolean twoWay(Vertex<T> v1, Vertex<T> v2) {
+  public static <T> boolean twoWay(Vertex<T> v1, Vertex<T> v2, List<Vertex<?>> seen) {
+    if (v1==v2) return true;
     return false;
+  }
+  public static <T> boolean twoWay(Vertex<T> v1, Vertex<T> v2) {
+    List<Vertex<?>> seen = new ArrayList<>();
+    return twoWay(v1, v2, seen);
   }
 
   /**
@@ -179,6 +211,16 @@ public class Practice {
    * @return an unsorted list of next moves
    */
   public static List<int[]> nextMoves(char[][] board, int[] current, int[][] directions) {
-    return null;
+    int currROW = current[0];
+    int currCOL = current[1];
+    List<int[]> possibleMoves = new ArrayList<>();
+    for (int[] dir : directions) {
+      int newROW = currROW + dir[0];
+      int newCOL = currCOL + dir[1];
+      if (newROW>=0&&newROW<board.length&&newCOL>=0&&newCOL<board[newROW].length) {
+        if (board[newROW][newCOL]!='X') possibleMoves.add(new int[]{newROW,newCOL});
+      }
+    }
+    return possibleMoves;
   }
 }
