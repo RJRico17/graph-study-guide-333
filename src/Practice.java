@@ -126,7 +126,7 @@ public class Practice {
   }
   public static <T> boolean twoWay(Vertex<T> v1, Vertex<T> v2) {
     List<Vertex<?>> seen = new ArrayList<>();
-    return twoWay(v1, v2, seen);
+    return (twoWay(v1, v2, seen)==twoWay(v2, v1, seen));
   }
 
   /**
